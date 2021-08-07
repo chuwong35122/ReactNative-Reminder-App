@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {
   View,
   VStack,
@@ -11,15 +11,24 @@ import {
 } from 'native-base';
 import {StyleSheet} from 'react-native';
 import {Formik} from 'formik';
-import {TodoInterface} from './../interface/todo.interface';
-import {todoValidationSchema} from '../schema/todoValidatingSchema';
-import {storeTodoData} from '../lib/storage';
+import {ReminderInterface} from '../interface/reminder.interface';
+import {reminderValidationSchema} from '../schema/reminderValidatingSchema';
+import {saveReminder} from '../lib/storage';
 
-export const Todo = () => {
+type ReminderProp = {
+  isReminderChanged: boolean;
+  setIsReminderChange: Dispatch<SetStateAction<boolean>>;
+};
+
+export const Reminder = ({
+  isReminderChanged,
+  setIsReminderChange,
+}: ReminderProp) => {
   const toast = useToast();
 
-  const handleDataSubmission = async (data: TodoInterface) => {
-    const result = await storeTodoData(data);
+  const handleDataSubmission = async (data: ReminderInterface) => {
+    const result = await saveReminder(data);
+    if (result.status === 'success') setIsReminderChange(!isReminderChanged);
     return toast.show({
       title: result?.title,
       placement: 'bottom',
@@ -27,7 +36,7 @@ export const Todo = () => {
     });
   };
 
-  const initialValues: TodoInterface = {
+  const initialValues: ReminderInterface = {
     date: new Date(),
     title: undefined,
   };
@@ -36,7 +45,7 @@ export const Todo = () => {
     <Formik
       initialValues={initialValues}
       onSubmit={handleDataSubmission}
-      validationSchema={todoValidationSchema}>
+      validationSchema={reminderValidationSchema}>
       {({handleChange, handleBlur, handleSubmit, errors}) => (
         <View>
           <Heading color="white">Reminder</Heading>

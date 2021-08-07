@@ -1,14 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {View} from 'native-base';
-import {Todo} from '../components/Todo';
-import {TodoItems} from '../components/TodoItems';
+import {Reminder} from '../components/Reminder';
+import {ReminderItems} from '../components/ReminderItems';
 
 export const HomeScreen = () => {
+  const [isReminderChanged, setIsReminderChanged] = useState(false);
+
   return (
     <View style={styles.container} backgroundColor="dark.100">
-      <Todo />
-      <TodoItems />
+      <Reminder
+        isReminderChanged={isReminderChanged}
+        setIsReminderChange={setIsReminderChanged}
+      />
+      <ReminderItems isReminderChanged={isReminderChanged} />
     </View>
   );
 };

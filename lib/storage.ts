@@ -1,45 +1,68 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ToastInterface, TodoInterface} from '../interface/todo.interface';
+import uuid from 'uuid-random';
+import {
+  ToastInterface,
+  ReminderInterface,
+  ReminderInterfaceMap,
+} from '../interface/reminder.interface';
 
-export async function storeTodoData(
-  data: TodoInterface,
+export async function saveReminder(
+  data: ReminderInterface,
 ): Promise<ToastInterface> {
-  if (data.title) {
-    try {
-      const jsonData = JSON.stringify(data);
-      await AsyncStorage.setItem(data.title, jsonData);
-      return {title: 'TODO created.', status: 'success'};
-    } catch (e) {
-      console.error(e);
-    }
-  }
-  return {title: 'TODO creation failed.', status: 'error'};
-}
+  const ID = uuid();
 
-export async function getAllKeys() {
+  const result = await AsyncStorage.getItem('reminder');
   try {
-    const keys = AsyncStorage.getAllKeys();
-    return keys;
+    if (result != null) {
+      const reminderList = JSON.parse(result);
+      reminderList[ID] = data;
+      await AsyncStorage.setItem('reminder', JSON.stringify(reminderList));
+    } else {
+      const newReminderList = {
+        [ID]: data,
+      };
+      await AsyncStorage.setItem('reminder', JSON.stringify(newReminderList));
+    }
+    return {title: 'Reminder added.', status: 'success'};
   } catch (e) {
-    console.error('Cannot retrieve keys.');
+    console.error('Cannot add reminder.');
+    return {title: 'Reminder cannot be added.', status: 'error'};
   }
 }
 
-export async function getAllItems() {
-  const keys = await getAllKeys();
-  const todoItems: TodoInterface[] = [];
-
-  if (keys != null) {
-    for (const key in keys) {
-      const data = await AsyncStorage.getItem(key);
-      try {
-        if (data != null) {
-          todoItems.push(JSON.parse(data));
-        }
-      } catch (e) {
-        console.error('Cannot getAllItems');
-      }
+export async function getReminders(): Promise<
+  ReminderInterfaceMap | undefined
+> {
+  try {
+    const data = await AsyncStorage.getItem('reminder');
+    if (data != null) {
+      return JSON.parse(data);
     }
+  } catch (e) {
+    console.error('Cannot retrieve reminders.');
   }
-  return todoItems;
+
+  return;
+}
+
+export async function getReminderList(): Promise<
+  ReminderInterface[] | undefined
+> {
+  const result = await getReminders();
+  const reminderList = [];
+
+  if (result != null) {
+    for (const k in result) {
+      reminderList.push(result[k]);
+    }
+    return reminderList;
+  }
+
+  return;
+}
+
+export async function clearStorage() {
+  try {
+    AsyncStorage.clear();
+  } catch (e) {}
 }
