@@ -1,6 +1,9 @@
 export interface TodoInterface {
-  id: string;
   date: Date;
+  title: string | undefined;
+}
+
+export interface ToastInterface {
   title: string;
-  note: string;
+  status: 'success' | 'error' | 'info' | 'warning';
 }
