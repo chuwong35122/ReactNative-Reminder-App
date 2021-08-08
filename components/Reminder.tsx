@@ -13,7 +13,7 @@ import {StyleSheet} from 'react-native';
 import {Formik} from 'formik';
 import {ReminderInterface} from '../interface/reminder.interface';
 import {reminderValidationSchema} from '../schema/reminderValidatingSchema';
-import {saveReminder} from '../lib/storage';
+import {getAllReminderTitle, saveReminder} from '../lib/storage';
 
 type ReminderProp = {
   isReminderChanged: boolean;
@@ -27,13 +27,25 @@ export const Reminder = ({
   const toast = useToast();
 
   const handleDataSubmission = async (data: ReminderInterface) => {
-    const result = await saveReminder(data);
-    if (result.status === 'success') setIsReminderChange(!isReminderChanged);
-    return toast.show({
-      title: result?.title,
-      placement: 'bottom',
-      status: result?.status,
-    });
+    const titles = await getAllReminderTitle();
+    if (data.title) {
+      if (titles.includes(data.title)) {
+        return toast.show({
+          title: 'Please change your title.',
+          placement: 'bottom',
+          status: 'info',
+        });
+      }
+      const result = await saveReminder(data);
+      if (result.status === 'success') {
+        setIsReminderChange(!isReminderChanged);
+      }
+      return toast.show({
+        title: result?.title,
+        placement: 'bottom',
+        status: result?.status,
+      });
+    }
   };
 
   const initialValues: ReminderInterface = {

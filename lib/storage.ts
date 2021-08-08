@@ -87,3 +87,16 @@ export async function clearStorage() {
     AsyncStorage.clear();
   } catch (e) {}
 }
+
+export async function getAllReminderTitle() {
+  const data = await getReminderList();
+  const titles: string[] = [];
+  if (data) {
+    data.forEach(reminder => {
+      if (reminder.title) {
+        titles.push(reminder.title);
+      }
+    });
+  }
+  return titles;
+}
