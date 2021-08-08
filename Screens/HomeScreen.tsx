@@ -13,7 +13,10 @@ export const HomeScreen = () => {
         isReminderChanged={isReminderChanged}
         setIsReminderChange={setIsReminderChanged}
       />
-      <ReminderItems isReminderChanged={isReminderChanged} />
+      <ReminderItems
+        isReminderChanged={isReminderChanged}
+        setIsReminderChanged={setIsReminderChanged}
+      />
     </View>
   );
 };

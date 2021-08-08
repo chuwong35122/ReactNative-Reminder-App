@@ -1,36 +1,65 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, VStack, Flex, Heading} from 'native-base';
+import React, {useState, useEffect, Dispatch, SetStateAction} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  VStack,
+  Flex,
+  Heading,
+  Pressable,
+  useToast,
+} from 'native-base';
 import {ReminderInterface} from '../interface/reminder.interface';
 import moment from 'moment';
 import {Image, StyleSheet} from 'react-native';
-import {getReminders} from '../lib/storage';
+import {deleteReminder, getReminders} from '../lib/storage';
 
 type ReminderItemsProp = {
   isReminderChanged: boolean;
+  setIsReminderChanged: Dispatch<SetStateAction<boolean>>;
 };
-export const ReminderItems = ({isReminderChanged}: ReminderItemsProp) => {
+export const ReminderItems = ({
+  isReminderChanged,
+  setIsReminderChanged,
+}: ReminderItemsProp) => {
+  const toast = useToast();
   const [reminderList, setReminderList] = useState<ReminderInterface[]>();
 
   const getReminderList = async () => {
     const result = await getReminders();
-    const reminderList = [];
+    const reminderListTemp = [];
 
     if (result != null) {
       for (const k in result) {
-        reminderList.push(result[k]);
+        reminderListTemp.push(result[k]);
       }
-      setReminderList(reminderList);
+      setReminderList(reminderListTemp);
       return reminderList;
     }
   };
 
   useEffect(() => {
     getReminderList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReminderChanged]);
 
-  const _renderItem = (item: ReminderInterface) => {
+  const handleReminderDeletion = async (item: ReminderInterface) => {
+    if (item.title != null) {
+      const result = await deleteReminder(item.title);
+      if (result.status === 'success') {
+        setIsReminderChanged(!isReminderChanged);
+      }
+      return toast.show({
+        title: result?.title,
+        placement: 'bottom',
+        status: result?.status,
+      });
+    }
+  };
+
+  const _renderItem = (item: ReminderInterface, index: number) => {
     return (
-      <View backgroundColor="gray.600" style={styles.listItem}>
+      <View backgroundColor="gray.600" style={styles.listItem} key={index}>
         <Flex
           flexDirection="row"
           justifyContent="space-between"
@@ -43,22 +72,26 @@ export const ReminderItems = ({isReminderChanged}: ReminderItemsProp) => {
               {item.title}
             </Text>
           </VStack>
-          <Image
-            source={require('../assets/icons/delete.png')}
-            style={styles.iconTrash}
-          />
+          <Pressable onPress={() => handleReminderDeletion(item)}>
+            <Image
+              source={require('../assets/icons/delete.png')}
+              style={styles.iconTrash}
+            />
+          </Pressable>
         </Flex>
       </View>
     );
   };
 
   return (
-    <View>
+    <View flex={1}>
       {reminderList ? (
         <FlatList
           data={reminderList}
-          renderItem={({item}) => _renderItem(item)}
-          keyExtractor={item => item.id}
+          renderItem={({item, index}) => _renderItem(item, index)}
+          keyExtractor={(item, index) => {
+            return index.toString();
+          }}
         />
       ) : (
         <Heading color="white">Wow... such an empty place.</Heading>
@@ -74,14 +107,8 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 20,
   },
-  iconDone: {
-    width: 40,
-    height: 40,
-    color: '#f5f5f5',
-  },
   iconTrash: {
     width: 40,
     height: 40,
-    color: '#a3a3a3',
   },
 });

@@ -61,6 +61,27 @@ export async function getReminderList(): Promise<
   return;
 }
 
+export async function deleteReminder(title: string): Promise<ToastInterface> {
+  const data = await getReminderList();
+  if (data) {
+    const filtered = data.filter(reminder => reminder.title !== title);
+    const map: ReminderInterfaceMap = {};
+    filtered.forEach(reminder => {
+      const ID = uuid();
+      map[ID] = reminder;
+    });
+
+    try {
+      await AsyncStorage.setItem('reminder', JSON.stringify(map));
+      return {title: 'Reminder deleted.', status: 'success'};
+    } catch (err) {
+      console.error('Cannot delete reminder.');
+    }
+  }
+
+  return {title: 'Reminder cannot be deleted.', status: 'error'};
+}
+
 export async function clearStorage() {
   try {
     AsyncStorage.clear();
