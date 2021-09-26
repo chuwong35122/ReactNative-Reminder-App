@@ -12,3 +12,6 @@ This is my first time using pure React Native (with out the use of Expo) and it'
 
 Feel free to Fork this basic application :D
 PS. Please let me know if I can improve any line of codes, since I begin this project as a personal challenge and a as a quest to learn more React Native!
+![Screenshot_20210926-124017_ReminderApp](https://user-images.githubusercontent.com/57100501/134795161-53514749-f374-4f45-a387-ce1c3c41593b.png)
+![Screenshot_20210926-123951_ReminderApp](https://user-images.githubusercontent.com/57100501/134795163-3935256d-f7a8-4d89-bc6f-1d1d8f2846f6.png)
+![Screenshot_20210926-124042_ReminderApp](https://user-images.githubusercontent.com/57100501/134795165-aa998cd9-cfce-48c8-9e2a-8f559e8ad019.png)
