@@ -10,6 +10,8 @@ to implement it, but I have a quick errand to run after the completion of my app
 
 This is my first time using pure React Native (with out the use of Expo) and it's a pretty good experience so far.
 
+Another reason I had before committing to this project is that I wonder how much memory needed for React Native to create such a simple application. The results turn out to be about 53 Mb which is surprisingly high (considered using only Native Base, Async Storage).
+
 Feel free to Fork this basic application :D
 PS. Please let me know if I can improve any line of codes, since I begin this project as a personal challenge and a as a quest to learn more React Native!
 ![Screenshot_20210926-124017_ReminderApp](https://user-images.githubusercontent.com/57100501/134795161-53514749-f374-4f45-a387-ce1c3c41593b.png)
