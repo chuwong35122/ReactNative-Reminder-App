@@ -1,5 +1,5 @@
 # ReactNative-Reminder-App
-A 24hour pure React Native challenge.
+A 12 hour pure React Native challenge.
 
 I've used React for less than 3 months and around 1 months for React Native. Since I will be starting the junior year of university soon, I would like to challenge myself.
 Personally, I sometimes forgot the task that I should do and one of my closest person also told me that I should remind myself with something. I, therefore, wanted to created a basic
